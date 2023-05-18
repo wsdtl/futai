@@ -44,10 +44,10 @@ class DataBaseData():
     def close(self) -> None:
         
         self.conn.close()
-        # try:
-        #     self.MyWindow_sql_signal.emit("数据库关闭！")
-        # except Exception as e:
-        #     pass
+        try:
+            self.MyWindow_sql_signal.emit("数据库关闭！")
+        except Exception as e:
+            pass
 
     def _check_table(self) -> str:
         """检查数据完整性"""
@@ -90,14 +90,14 @@ class DataBaseData():
         sql = f"select * from {self.MAIN_TABLE} where "
         
         if len_min != None and len_max != None:
-            sql += f"len_data in ({len_min},{len_max}) and "
+            sql += f"len_data>{len_min} and len_data<{len_max} and "
         elif len_min == None and len_max != None:
             sql += f"len_data<={len_max} and "
         elif len_min != None and len_max == None:
             sql += f"len_data>={len_min} and "
             
         if wid_min != None and wid_max != None:
-            sql += f"wid_data in ({wid_min},{wid_max}) and "
+            sql += f"wid_data>{wid_min} and wid_data<{wid_max} and "
         elif wid_min == None and wid_max != None:
             sql += f"wid_data<={wid_max} and "
         elif wid_min != None and wid_max == None:
@@ -110,15 +110,14 @@ class DataBaseData():
 
         if sql[-4:] == "and ":
             sql = sql[:-4]
-        # sql += ";"    
-        print(sql)
+        # sql += ";"  
+        print(sql)  
         try:
             cur = self.conn.cursor()
             cur.execute(sql)
             result = cur.fetchall()
             return  self.DATABASE_TABLE.get(self.MAIN_TABLE), result
         except Exception as e:
-            print(e)
             return False, e
 
        
