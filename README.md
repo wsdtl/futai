@@ -1,2 +1,1 @@
-# tina_fu_tai
-TianFuTain_project
+#福泰结构小项目
