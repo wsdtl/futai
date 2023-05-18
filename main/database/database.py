@@ -104,7 +104,7 @@ class DataBaseData():
             sql += f"wid_data>={wid_min} and "
         
         if shape_data != None:
-            sql += f"shape_data={shape_data} and "
+            sql += f"""shape_data="{shape_data}" and """
         if thinck_data != None:
             sql += f"thinck_data={thinck_data} and "
 
