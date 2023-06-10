@@ -11,5 +11,6 @@ if  __name__ == "__main__":
     
     win = MyWindow()
     win.ui.show()
+    print("测试")
     
     app.exec()
