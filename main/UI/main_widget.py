@@ -32,7 +32,10 @@ from PyQt5.QtWidgets import (
     QAbstractItemView,
     QTableWidgetItem
 )
-from qframelesswindow import FramelessWindow, StandardTitleBar
+from qframelesswindow import (
+    FramelessWindow,
+    StandardTitleBar
+    )
 
 from . import imge
 from sql import SqlData
@@ -291,7 +294,7 @@ class DialogImgThread(QThread):
         return
     
     
-class mainWeight(FramelessWindow):
+class MainWeight(FramelessWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setFixedSize(1000, 800)
@@ -530,25 +533,8 @@ class mainWeight(FramelessWindow):
     
 
  
-def main():
-        # enable dpi scale
-    QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
-    app = QApplication(sys.argv)
-
-    # fix issue #50
-    app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
-
-    window = mainWeight()
-    window.show()
-    app.exec()
     
-    
-if __name__ == '__main__':
-    main()
 
     
  

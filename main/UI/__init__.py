@@ -1,1 +1,1 @@
-from .main_widget import main as main
+from .main_widget import MainWeight as MainWeight
