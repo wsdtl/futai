@@ -1,0 +1,1 @@
+from .main_widget import main as main

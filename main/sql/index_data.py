@@ -1,9 +1,9 @@
 import random
 import datetime
 
-from database import DataBaseData
+from main.sql.sql import sqlData
 
-sql = DataBaseData()
+sql = sqlData()
 
 
 def wid_data():
@@ -31,7 +31,7 @@ def postion():
     return str(random.choice(["1号柜","2号柜","3号柜","4号柜","5号柜","6号柜","7号柜","8号柜","9号柜","0号柜"]))
 
 
-sql = DataBaseData()
+sql = sqlData()
 
 for i in range(1,10):
 

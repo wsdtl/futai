@@ -1,16 +1,5 @@
-import sys
-
-from PyQt5.QtWidgets import *
-
-from UI.ui_set import MyWindow
+from UI import main
 
 
-
-if  __name__ == "__main__":
-    app = QApplication(sys.argv)
-    
-    win = MyWindow()
-    win.ui.show()
-    print("测试")
-    
-    app.exec()
+if __name__ == "__main__":
+    main() 

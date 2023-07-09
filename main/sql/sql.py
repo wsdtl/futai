@@ -1,58 +1,43 @@
 import os
 from collections import namedtuple
 from pathlib import Path
+from typing import Union
 
 import sqlite3
 
 num = "123456789"
 
-class DataBaseData():
+class SqlData():
     global num
     _instance = {}
     _has_init = {}
     
-    DATABASE = Path() / os.path.dirname(os.path.abspath(__file__)) / "database.db"
+    DATABASE = Path() / os.path.dirname(os.path.abspath(__file__)) / "data.db"
     DATABASE_TABLE = {
         "waste":["id","len_data","wid_data","shape_data","thinck_data","date","postion","is_delete"]
         }
-    
-    # WASTE_DATA = namedtuple("waste", ["id","len_data","wid_data",
-    #                                   "shape_data","thinck_data","date","is_delete"])
+    DATABASE_TABLE_ZN = {
+        "waste":["序号","长度","宽度","形状","厚度","存入日期","存放位置"]
+        }
     MAIN_TABLE = "waste"
      
-    def __new__(cls, *args, **kwargs):
-
-        if kwargs.get("signal", False):
-            cls.MyWindow_sql_signal = kwargs.get("signal")
+    def __new__(cls):
         if cls._instance.get(num) is None:
-            cls._instance[num] = super(DataBaseData, cls).__new__(cls)
+            cls._instance[num] = super(SqlData, cls).__new__(cls)
         return cls._instance[num] 
      
-    def __init__(self, *args, **kwargs):
-        
-        txt = "数据库已连接！"
+    def __init__(self):
         if not self._has_init.get(num):
             self._has_init[num] = True
             self.conn = sqlite3.connect(self.DATABASE, timeout=10, check_same_thread=False)
             
-            msg = self._check_table()
-            try:
-                self.MyWindow_sql_signal.emit(txt + "<br>" + msg)
-            except Exception as e:
-                pass
             
     def close(self) -> None:
-        
         self.conn.close()
-        try:
-            self.MyWindow_sql_signal.emit("数据库关闭！")
-        except Exception as e:
-            pass
 
     def _check_table(self) -> str:
         """检查数据完整性"""
         
-        txt = ""
         for table, key in self.DATABASE_TABLE.items():
             if table == "waste":
                 cur = self.conn.cursor()
@@ -70,10 +55,8 @@ class DataBaseData():
                         "is_delete" int default 1
                         );''')
                     self.conn.commit()
-                    txt += f"{table}数据表创建成功!"
             else:
                 pass
-        return txt    
 
     def add_data(self,len_data: int,wid_data : int ,shape_data: str,thinck_data: int,date: str,postion: str) -> None:
         """在数据库中创建并初始化"""
@@ -87,7 +70,7 @@ class DataBaseData():
         return 
         
     def select_data(self, len_min = None, len_max = None, wid_min = None, wid_max = None, shape_data = None, thinck_data = None) -> tuple:
-        sql = f"select * from {self.MAIN_TABLE} where "
+        sql = f"select id, len_data, wid_data, shape_data, thinck_data, date, postion from {self.MAIN_TABLE} where is_delete=1 and "
         
         if len_min != None and len_max != None:
             sql += f"len_data>{len_min} and len_data<{len_max} and "
@@ -111,14 +94,40 @@ class DataBaseData():
         if sql[-4:] == "and ":
             sql = sql[:-4]
         # sql += ";"  
-        print(sql)  
         try:
             cur = self.conn.cursor()
             cur.execute(sql)
             result = cur.fetchall()
-            return  self.DATABASE_TABLE.get(self.MAIN_TABLE), result
+            return  self.DATABASE_TABLE_ZN.get(self.MAIN_TABLE), result
         except Exception as e:
             return False, e
 
+    def select_shape_all(self) -> tuple:
+        sql = f"select distinct shape_data from {self.MAIN_TABLE}" 
+        try:
+            cur = self.conn.cursor()
+            cur.execute(sql)
+            result = cur.fetchall()
+            return result
+        except Exception as e:
+            return None
+        
+    def select_img_url(self, ID: Union[str, int]) -> str:
+        sql = f"select img_url from {self.MAIN_TABLE} where id={ID}" 
+        try:
+            cur = self.conn.cursor()
+            cur.execute(sql)
+            result = cur.fetchall()
+            return result
+        except Exception as e:
+            return None
+    
+if __name__ == '__main__':
+
+    sql = SqlData()
+    data = sql.select_img_url("12")
+    # for x in list(data):
+    #     print(x)
+    print(data)
        
 
