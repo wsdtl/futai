@@ -1,1 +1,0 @@
-from .main_widget import MainWeight as MainWeight

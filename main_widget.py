@@ -1,10 +1,8 @@
-# coding:utf-8
 import sys
 from typing import Union
 
 from PyQt5.QtCore import (
     Qt,
-    QSize, 
     QPoint,
     QThread,
     pyqtSignal
@@ -12,8 +10,6 @@ from PyQt5.QtCore import (
 from PyQt5.QtGui import(
     QIcon, 
     QIntValidator,               
-    QFont, 
-    QKeySequence,
     QPixmap
   
 )
@@ -37,7 +33,7 @@ from qframelesswindow import (
     StandardTitleBar
     )
 
-from . import imge
+import imge
 from sql import SqlData
 
 class PushButtoneEmnu(QPushButton):
@@ -96,7 +92,6 @@ class PushButtonSeek(QPushButton):
         }                   
         """)
         
-
 class TableWidget(QTableWidget):
     
     tabSqlSignal = pyqtSignal(list, list)
@@ -245,8 +240,9 @@ class ComboxShapeThread(QThread):
         return
 
 class LineEdit(QLineEdit):
-    def __init__(self) ->None:
+    def __init__(self) -> None:
         super().__init__()
+        self.setContextMenuPolicy(Qt.NoContextMenu) # 取消右键菜单
         self.setStyleSheet(
         """
         QLineEdit
@@ -266,6 +262,10 @@ class DialogImg(QDialog):
         super().__init__()
         self.setWindowTitle(f"序号{ID}物料的图片预览")
         self.setWindowIcon(QIcon(":img/icon.png"))
+        # 窗口打开位置，默认在屏幕中间
+        desktop = QApplication.desktop().availableGeometry()
+        w, h = desktop.width(), desktop.height()
+        self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
         self.lab = QLabel(self)
         self.thread = DialogImgThread(self.dialogSingal, ID)  # 创建线程
         self.thread.start()  # 开始线程
@@ -312,6 +312,10 @@ class MainWeight(FramelessWindow):
                 background: #ffffff;
             }
         """)
+        # 窗口打开位置，默认在屏幕中间
+        desktop = QApplication.desktop().availableGeometry()
+        w, h = desktop.width(), desktop.height()
+        self.move(w // 2 - self.width() // 2, h // 2 - self.height() // 2)
         self.mainWidget = QWidget(self)
         self.mainWidget.setObjectName("mainWidget")
         self.mainWidget.resize(self.width(), self.height() - 35)
@@ -529,12 +533,21 @@ class MainWeight(FramelessWindow):
         self.rightWidgetBase = q5
         self.rightLayout.addWidget(self.rightWidgetBase)
             
+            
+if __name__ == "__main__":
+        # enable dpi scale
+    QApplication.setHighDpiScaleFactorRoundingPolicy(
+        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
-    
+    app = QApplication(sys.argv)
 
- 
+    # fix issue #50
+    app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
 
-    
-
-    
+    window = MainWeight()
+    window.show()
+    app.exec()
+     
  

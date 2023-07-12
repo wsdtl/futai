@@ -1,6 +1,4 @@
 import os
-from collections import namedtuple
-from pathlib import Path
 from typing import Union
 
 import sqlite3
@@ -12,7 +10,7 @@ class SqlData():
     _instance = {}
     _has_init = {}
     
-    DATABASE = Path() / os.path.dirname(os.path.abspath(__file__)) / "data.db"
+    DATABASE =  os.path.join(os.path.dirname(os.path.abspath(__file__)), "data.db") 
     DATABASE_TABLE = {
         "waste":["id","len_data","wid_data","shape_data","thinck_data","date","postion","is_delete"]
         }
@@ -121,13 +119,5 @@ class SqlData():
             return result
         except Exception as e:
             return None
-    
-if __name__ == '__main__':
 
-    sql = SqlData()
-    data = sql.select_img_url("12")
-    # for x in list(data):
-    #     print(x)
-    print(data)
        
-
